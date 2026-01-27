@@ -3,7 +3,7 @@
 #include <locale.h>
 #include "multiwersum.h"
 
-// Funkcja pomocnicza do czyszczenia bufora
+// Implementacja funkcji pomocniczej
 void wyczysc_bufor() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -16,10 +16,8 @@ void naglowek_aplikacji() {
 }
 
 int main(int argc, char *argv[]) {
-    // Ustawienie polskich znaków
     setlocale(LC_ALL, ""); 
 
-    //Ścieżka do pliku przekazywana w argumencie
     if (argc < 2) {
         printf("BLAD: Nie podano nazwy pliku bazy danych!\n");
         printf("Uzycie: %s <nazwa_pliku.txt>\n", argv[0]);
@@ -31,6 +29,10 @@ int main(int argc, char *argv[]) {
 
     while (wybor != 0) {
         naglowek_aplikacji();
+        if (baza != NULL) printf("  [Aktualnie w bazie sa dane]\n");
+        else printf("  [Baza jest pusta]\n");
+        
+        printf("------------------------------------------------------\n");
         printf("1. Dodaj nowy przedmiot\n");
         printf("2. Wyswietl liste przedmiotow\n");
         printf("3. Edytuj przedmiot\n");
@@ -47,14 +49,13 @@ int main(int argc, char *argv[]) {
             wyczysc_bufor();
             continue;
         }
-        wyczysc_bufor();
-
+        
         switch (wybor) {
             case 1:
-                printf("\n[INFO] Funkcja dodawania wkrotce...\n");
+                dodaj_przedmiot(&baza);
                 break;
             case 2:
-                printf("\n[INFO] Lista jest pusta.\n");
+                printf("\n[INFO] Funkcja wyswietlania w nastepnym kroku...\n");
                 break;
             case 0:
                 printf("\nZamykanie systemu...\n");
@@ -66,8 +67,10 @@ int main(int argc, char *argv[]) {
         if (wybor != 0) {
             printf("\nWcisnij Enter, aby kontynuowac...");
             getchar();
+            getchar();
         }
     }
+
 
     return 0;
 }

@@ -10,7 +10,7 @@
 #define MAX_SWIAT 50
 #define MAX_OPIS 200
 
-// Typ wyliczeniowy dla stabilności wymiarowej
+// Typ wyliczeniowy dla stabilności
 typedef enum {
     STABILNY,
     CHWIEJNY,
@@ -18,17 +18,19 @@ typedef enum {
     NIEKLASYFIKOWANY
 } StatusStabilnosci;
 
-// Główna struktura reprezentująca przedmiot z Biura
+// Struktura listy
 typedef struct Przedmiot {
-    char nazwa[MAX_NAZWA + 1];             
-    char swiat_pochodzenia[MAX_SWIAT + 1]; 
-    int poziom_chaosu;                     
-    char opis_efektu[MAX_OPIS + 1];        
-    StatusStabilnosci stabilnosc;          
-    struct Przedmiot* nastepny;            
+    char nazwa[MAX_NAZWA + 1];
+    char swiat_pochodzenia[MAX_SWIAT + 1];
+    int poziom_chaosu;
+    char opis_efektu[MAX_OPIS + 1];
+    StatusStabilnosci stabilnosc;
+    struct Przedmiot* nastepny;
 } Przedmiot;
 
 // Deklaracje funkcji
 void naglowek_aplikacji();
+void wyczysc_bufor();
+void dodaj_przedmiot(Przedmiot** baza);
 
 #endif
