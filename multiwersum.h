@@ -37,4 +37,7 @@ void edytuj_przedmiot(Przedmiot* baza);
 void usun_przedmiot(Przedmiot** baza);
 void wyszukaj_przedmioty(Przedmiot* baza);
 void sortuj_przedmioty(Przedmiot* baza);
+void zwolnij_pamiec(Przedmiot** baza);
+void zapisz_do_pliku(Przedmiot* baza, const char* nazwa_pliku);
+void wczytaj_z_pliku(Przedmiot** baza, const char* nazwa_pliku);
 #endif

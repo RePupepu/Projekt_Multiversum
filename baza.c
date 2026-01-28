@@ -243,30 +243,25 @@ void wyszukaj_przedmioty(Przedmiot* baza) {
     if (znaleziono == 0) printf("[INFO] Brak wynikow spelniajacych kryteria.\n");
 }
 
-// Funkcja pomocnicza: zamienia zawartość dwóch przedmiotów (bez ruszania wskaźników)
 void zamien_dane(Przedmiot* a, Przedmiot* b) {
-    // 1. Zmienne tymczasowe na przechowanie danych 'a'
     char temp_nazwa[MAX_NAZWA + 1];
     char temp_swiat[MAX_SWIAT + 1];
     int temp_chaos;
     char temp_opis[MAX_OPIS + 1];
     StatusStabilnosci temp_stabilnosc;
 
-    // Kopiowanie a -> temp
     strcpy(temp_nazwa, a->nazwa);
     strcpy(temp_swiat, a->swiat_pochodzenia);
     temp_chaos = a->poziom_chaosu;
     strcpy(temp_opis, a->opis_efektu);
     temp_stabilnosc = a->stabilnosc;
 
-    // Kopiowanie b -> a
     strcpy(a->nazwa, b->nazwa);
     strcpy(a->swiat_pochodzenia, b->swiat_pochodzenia);
     a->poziom_chaosu = b->poziom_chaosu;
     strcpy(a->opis_efektu, b->opis_efektu);
     a->stabilnosc = b->stabilnosc;
 
-    // Kopiowanie temp -> b
     strcpy(b->nazwa, temp_nazwa);
     strcpy(b->swiat_pochodzenia, temp_swiat);
     b->poziom_chaosu = temp_chaos;
@@ -325,4 +320,93 @@ void sortuj_przedmioty(Przedmiot* baza) {
 
     printf("\n[SUKCES] Lista zostala posortowana.\n");
     wyswietl_liste(baza);
+}
+void zwolnij_pamiec(Przedmiot** baza) {
+    Przedmiot* aktualny = *baza;
+    Przedmiot* nastepny;
+
+    while (aktualny != NULL) {
+        nastepny = aktualny->nastepny;
+        free(aktualny);
+        aktualny = nastepny;
+    }
+    *baza = NULL;
+}
+
+void zapisz_do_pliku(Przedmiot* baza, const char* nazwa_pliku) {
+    FILE* plik = fopen(nazwa_pliku, "w");
+    
+    if (plik == NULL) {
+        printf("\n[BLAD] Nie udalo sie otworzyc pliku '%s' do zapisu!\n", nazwa_pliku);
+        return;
+    }
+
+    Przedmiot* aktualny = baza;
+    int licznik = 0;
+    
+    while (aktualny != NULL) {
+        fprintf(plik, "%s\n", aktualny->nazwa);
+        fprintf(plik, "%s\n", aktualny->swiat_pochodzenia);
+        fprintf(plik, "%d\n", aktualny->poziom_chaosu);
+        fprintf(plik, "%d\n", (int)aktualny->stabilnosc);
+        fprintf(plik, "%s\n", aktualny->opis_efektu);
+        
+        aktualny = aktualny->nastepny;
+        licznik++;
+    }
+
+    fclose(plik);
+    printf("\n[SUKCES] Zapisano %d przedmiotow do pliku '%s'.\n", licznik, nazwa_pliku);
+}
+
+void wczytaj_z_pliku(Przedmiot** baza, const char* nazwa_pliku) {
+    FILE* plik = fopen(nazwa_pliku, "r");
+    
+    if (plik == NULL) {
+        printf("\n[INFO] Plik '%s' nie istnieje lub jest pusty. Zaczynamy z czysta baza.\n", nazwa_pliku);
+        return;
+    }
+
+    zwolnij_pamiec(baza);
+
+    char bufor[512];
+    int wczytane_elementy = 0;
+
+    while (fgets(bufor, sizeof(bufor), plik) != NULL) {
+        Przedmiot* nowy = (Przedmiot*)malloc(sizeof(Przedmiot));
+        if (nowy == NULL) break;
+
+        bufor[strcspn(bufor, "\n")] = 0;
+        strcpy(nowy->nazwa, bufor);
+
+        if (fgets(bufor, sizeof(bufor), plik)) {
+            bufor[strcspn(bufor, "\n")] = 0;
+            strcpy(nowy->swiat_pochodzenia, bufor);
+        }
+
+        if (fgets(bufor, sizeof(bufor), plik)) {
+            nowy->poziom_chaosu = atoi(bufor);
+        }
+
+        if (fgets(bufor, sizeof(bufor), plik)) {
+            int status_int = atoi(bufor);
+            if (status_int >= 0 && status_int <= 3) 
+                nowy->stabilnosc = (StatusStabilnosci)status_int;
+            else 
+                nowy->stabilnosc = NIEKLASYFIKOWANY;
+        }
+
+        if (fgets(bufor, sizeof(bufor), plik)) {
+            bufor[strcspn(bufor, "\n")] = 0;
+            strcpy(nowy->opis_efektu, bufor);
+        }
+
+        nowy->nastepny = *baza;
+        *baza = nowy;
+        wczytane_elementy++;
+    }
+
+    fclose(plik);
+    
+    printf("\n[SUKCES] Wczytano %d przedmiotow z pliku '%s'.\n", wczytane_elementy, nazwa_pliku);
 }
