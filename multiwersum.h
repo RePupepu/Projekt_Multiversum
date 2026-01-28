@@ -5,12 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Stałe rozmiary tablic
+
 #define MAX_NAZWA 100
 #define MAX_SWIAT 50
 #define MAX_OPIS 200
 
-// Typ wyliczeniowy dla stabilności
 typedef enum {
     STABILNY,
     CHWIEJNY,
@@ -18,7 +17,6 @@ typedef enum {
     NIEKLASYFIKOWANY
 } StatusStabilnosci;
 
-// Struktura listy
 typedef struct Przedmiot {
     char nazwa[MAX_NAZWA + 1];
     char swiat_pochodzenia[MAX_SWIAT + 1];
@@ -28,7 +26,6 @@ typedef struct Przedmiot {
     struct Przedmiot* nastepny;
 } Przedmiot;
 
-// Deklaracje funkcji
 void naglowek_aplikacji();
 void wyczysc_bufor();
 void dodaj_przedmiot(Przedmiot** baza);

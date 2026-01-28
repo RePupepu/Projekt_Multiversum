@@ -3,7 +3,6 @@
 #include <locale.h>
 #include "multiwersum.h"
 
-// Funkcja pomocnicza do czyszczenia bufora
 void wyczysc_bufor() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
