@@ -60,6 +60,9 @@ int main(int argc, char *argv[]) {
             case 3:
                 edytuj_przedmiot(baza);
                 break;
+            case 4:
+                usun_przedmiot(&baza);
+                break;
             case 0:
                 printf("\nZamykanie systemu...\n");
                 break;

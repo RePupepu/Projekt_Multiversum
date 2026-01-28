@@ -128,3 +128,44 @@ void edytuj_przedmiot(Przedmiot* baza) {
 
     printf("\n[INFO] Nie znaleziono przedmiotu o nazwie '%s'.\n", szukana_nazwa);
 }
+
+void usun_przedmiot(Przedmiot** baza) {
+    if (*baza == NULL) {
+        printf("\n[BLAD] Baza jest pusta. Nie ma czego usuwac.\n");
+        return;
+    }
+
+    char nazwa_do_usuniecia[MAX_NAZWA];
+    printf("\nPodaj nazwe przedmiotu do usuniecia: ");
+    wyczysc_bufor();
+    wczytaj_tekst(nazwa_do_usuniecia, MAX_NAZWA);
+
+    Przedmiot* obecny = *baza;
+    Przedmiot* poprzedni = NULL;
+
+    while (obecny != NULL) {
+        if (strcmp(obecny->nazwa, nazwa_do_usuniecia) == 0) {
+            
+            if (obecny->stabilnosc == NIESTABILNY) {
+                printf("\n[OSTRZEZENIE] Nie mozna usunac przedmiotu '%s'!", obecny->nazwa);
+                printf("\nStatus: NIESTABILNY. Ryzyko zapasci czasoprzestrzennej!\n");
+                return; 
+            }
+
+            if (poprzedni == NULL) {
+                *baza = obecny->nastepny;
+            } else {
+                poprzedni->nastepny = obecny->nastepny;
+            }
+
+            free(obecny); 
+            printf("\n[SUKCES] Przedmiot '%s' zostal usuniety z ewidencji.\n", nazwa_do_usuniecia);
+            return;
+        }
+
+        poprzedni = obecny;
+        obecny = obecny->nastepny;
+    }
+
+    printf("\n[INFO] Nie znaleziono przedmiotu o nazwie '%s'.\n", nazwa_do_usuniecia);
+}
