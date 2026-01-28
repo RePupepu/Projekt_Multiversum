@@ -66,6 +66,9 @@ int main(int argc, char *argv[]) {
             case 0:
                 printf("\nZamykanie systemu...\n");
                 break;
+            case 5:
+                wyszukaj_przedmioty(baza);
+                break;
             default:
                 printf("\nNieznana opcja.\n");
         }

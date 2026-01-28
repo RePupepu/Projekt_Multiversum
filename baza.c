@@ -169,3 +169,76 @@ void usun_przedmiot(Przedmiot** baza) {
 
     printf("\n[INFO] Nie znaleziono przedmiotu o nazwie '%s'.\n", nazwa_do_usuniecia);
 }
+
+void wyszukaj_przedmioty(Przedmiot* baza) {
+    if (baza == NULL) {
+        printf("\n[INFO] Baza jest pusta. Nie ma czego szukac.\n");
+        return;
+    }
+
+    int opcja;
+    printf("\n--- WYSZUKIWANIE ---\n");
+    printf("1. Szukaj po nazwie (zawiera tekst)\n");
+    printf("2. Filtruj po poziomie chaosu (>= wartosc)\n");
+    printf("Wybierz kryterium: ");
+    
+    if (scanf("%d", &opcja) != 1) {
+        printf("Blad wejscia.\n");
+        wyczysc_bufor();
+        return;
+    }
+    wyczysc_bufor();
+
+    printf("\n%-30s | %-15s | %-5s | %-15s\n", "Nazwa", "Swiat", "Chaos", "Stabilnosc");
+    printf("-------------------------------------------------------------------------------\n");
+
+    Przedmiot* aktualny = baza;
+    int znaleziono = 0;
+
+    if (opcja == 1) {
+        char szukany_tekst[MAX_NAZWA];
+        printf("Podaj fragment nazwy: ");
+        wczytaj_tekst(szukany_tekst, MAX_NAZWA);
+
+        while (aktualny != NULL) {
+            if (strstr(aktualny->nazwa, szukany_tekst) != NULL) {
+                char stan[20];
+                if (aktualny->stabilnosc == STABILNY) strcpy(stan, "Stabilny");
+                else if (aktualny->stabilnosc == CHWIEJNY) strcpy(stan, "Chwiejny");
+                else if (aktualny->stabilnosc == NIESTABILNY) strcpy(stan, "!NIESTABILNY!");
+                else strcpy(stan, "Nieznany");
+
+                printf("%-30s | %-15s | %-5d | %-15s\n", 
+                    aktualny->nazwa, aktualny->swiat_pochodzenia, aktualny->poziom_chaosu, stan);
+                znaleziono++;
+            }
+            aktualny = aktualny->nastepny;
+        }
+
+    } else if (opcja == 2) {
+        int min_chaos;
+        printf("Pokaz przedmioty o poziomie chaosu wiekszym lub rownym: ");
+        scanf("%d", &min_chaos);
+        wyczysc_bufor();
+
+        while (aktualny != NULL) {
+            if (aktualny->poziom_chaosu >= min_chaos) {
+                char stan[20];
+                if (aktualny->stabilnosc == STABILNY) strcpy(stan, "Stabilny");
+                else if (aktualny->stabilnosc == CHWIEJNY) strcpy(stan, "Chwiejny");
+                else if (aktualny->stabilnosc == NIESTABILNY) strcpy(stan, "!NIESTABILNY!");
+                else strcpy(stan, "Nieznany");
+
+                printf("%-30s | %-15s | %-5d | %-15s\n", 
+                    aktualny->nazwa, aktualny->swiat_pochodzenia, aktualny->poziom_chaosu, stan);
+                znaleziono++;
+            }
+            aktualny = aktualny->nastepny;
+        }
+    } else {
+        printf("Nieznana opcja wyszukiwania.\n");
+    }
+
+    printf("-------------------------------------------------------------------------------\n");
+    if (znaleziono == 0) printf("[INFO] Brak wynikow spelniajacych kryteria.\n");
+}

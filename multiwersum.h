@@ -35,5 +35,6 @@ void dodaj_przedmiot(Przedmiot** baza);
 void wyswietl_liste(Przedmiot* baza);
 void edytuj_przedmiot(Przedmiot* baza);
 void usun_przedmiot(Przedmiot** baza);
+void wyszukaj_przedmioty(Przedmiot* baza);
 
 #endif
