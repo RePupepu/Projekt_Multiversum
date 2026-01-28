@@ -3,7 +3,6 @@
 #include <string.h>
 #include "multiwersum.h"
 
-// Funkcja pomocnicza do wczytywania tekstu bez entera
 void wczytaj_tekst(char* bufor, int rozmiar) {
     fgets(bufor, rozmiar, stdin);
     size_t len = strlen(bufor);
@@ -13,7 +12,6 @@ void wczytaj_tekst(char* bufor, int rozmiar) {
 }
 
 void dodaj_przedmiot(Przedmiot** baza) {
-    // 1. Alokacja pamięci na stercie
     Przedmiot* nowy = (Przedmiot*)malloc(sizeof(Przedmiot));
     
     if (nowy == NULL) {
@@ -23,7 +21,6 @@ void dodaj_przedmiot(Przedmiot** baza) {
 
     printf("\n--- DODAWANIE NOWEGO OBIEKTU ---\n");
     
-    // 2. Wczytywanie danych
     printf("Nazwa przedmiotu: ");
     wyczysc_bufor();
     wczytaj_tekst(nowy->nazwa, MAX_NAZWA);
@@ -54,7 +51,6 @@ void dodaj_przedmiot(Przedmiot** baza) {
         default: nowy->stabilnosc = NIEKLASYFIKOWANY; break;
     }
 
-    // 3. Wstawianie elementu na początek listy
     nowy->nastepny = *baza; 
     *baza = nowy;           
 
@@ -72,7 +68,6 @@ void wyswietl_liste(Przedmiot* baza) {
 
     Przedmiot* aktualny = baza;
     while (aktualny != NULL) {
-        // Zamiana numerka (enum) na tekst
         char stan[20];
         switch(aktualny->stabilnosc) {
             case STABILNY: strcpy(stan, "Stabilny"); break;
@@ -106,7 +101,6 @@ void edytuj_przedmiot(Przedmiot* baza) {
             printf("Aktualny poziom chaosu: %d\n", aktualny->poziom_chaosu);
             printf("Aktualny opis: %s\n", aktualny->opis_efektu);
             
-            //1. Zmiana chaosu
             int nowy_chaos;
             printf("\nPodaj nowy poziom chaosu (0-10): ");
             while (scanf("%d", &nowy_chaos) != 1 || nowy_chaos < 0 || nowy_chaos > 10) {
@@ -116,7 +110,6 @@ void edytuj_przedmiot(Przedmiot* baza) {
             aktualny->poziom_chaosu = nowy_chaos;
             wyczysc_bufor();
 
-            // 2. Zmiana opisu
             printf("Podaj nowy opis efektu: ");
             wczytaj_tekst(aktualny->opis_efektu, MAX_OPIS);
 
