@@ -242,3 +242,87 @@ void wyszukaj_przedmioty(Przedmiot* baza) {
     printf("-------------------------------------------------------------------------------\n");
     if (znaleziono == 0) printf("[INFO] Brak wynikow spelniajacych kryteria.\n");
 }
+
+// Funkcja pomocnicza: zamienia zawartość dwóch przedmiotów (bez ruszania wskaźników)
+void zamien_dane(Przedmiot* a, Przedmiot* b) {
+    // 1. Zmienne tymczasowe na przechowanie danych 'a'
+    char temp_nazwa[MAX_NAZWA + 1];
+    char temp_swiat[MAX_SWIAT + 1];
+    int temp_chaos;
+    char temp_opis[MAX_OPIS + 1];
+    StatusStabilnosci temp_stabilnosc;
+
+    // Kopiowanie a -> temp
+    strcpy(temp_nazwa, a->nazwa);
+    strcpy(temp_swiat, a->swiat_pochodzenia);
+    temp_chaos = a->poziom_chaosu;
+    strcpy(temp_opis, a->opis_efektu);
+    temp_stabilnosc = a->stabilnosc;
+
+    // Kopiowanie b -> a
+    strcpy(a->nazwa, b->nazwa);
+    strcpy(a->swiat_pochodzenia, b->swiat_pochodzenia);
+    a->poziom_chaosu = b->poziom_chaosu;
+    strcpy(a->opis_efektu, b->opis_efektu);
+    a->stabilnosc = b->stabilnosc;
+
+    // Kopiowanie temp -> b
+    strcpy(b->nazwa, temp_nazwa);
+    strcpy(b->swiat_pochodzenia, temp_swiat);
+    b->poziom_chaosu = temp_chaos;
+    strcpy(b->opis_efektu, temp_opis);
+    b->stabilnosc = temp_stabilnosc;
+}
+
+void sortuj_przedmioty(Przedmiot* baza) {
+    if (baza == NULL || baza->nastepny == NULL) {
+        printf("\n[INFO] Za malo elementow, by sortowac.\n");
+        return;
+    }
+
+    int opcja;
+    printf("\n--- SORTOWANIE ---\n");
+    printf("1. Sortuj alfabetycznie (Nazwa A-Z)\n");
+    printf("2. Sortuj wedlug Poziomu Chaosu (Malejaco 10-0)\n");
+    printf("Wybierz opcje: ");
+    
+    if (scanf("%d", &opcja) != 1) {
+        printf("Blad wejscia.\n");
+        wyczysc_bufor();
+        return;
+    }
+    wyczysc_bufor();
+
+    int zamiana;
+    Przedmiot* ptr;
+    Przedmiot* lptr = NULL; 
+
+    do {
+        zamiana = 0;
+        ptr = baza;
+
+        while (ptr->nastepny != lptr) {
+            int trzeba_zamienic = 0;
+
+            if (opcja == 1) {
+                if (strcmp(ptr->nazwa, ptr->nastepny->nazwa) > 0) {
+                    trzeba_zamienic = 1;
+                }
+            } else if (opcja == 2) {
+                if (ptr->poziom_chaosu < ptr->nastepny->poziom_chaosu) {
+                    trzeba_zamienic = 1;
+                }
+            }
+
+            if (trzeba_zamienic) {
+                zamien_dane(ptr, ptr->nastepny);
+                zamiana = 1;
+            }
+            ptr = ptr->nastepny;
+        }
+        lptr = ptr;
+    } while (zamiana);
+
+    printf("\n[SUKCES] Lista zostala posortowana.\n");
+    wyswietl_liste(baza);
+}

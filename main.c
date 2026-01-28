@@ -69,6 +69,9 @@ int main(int argc, char *argv[]) {
             case 5:
                 wyszukaj_przedmioty(baza);
                 break;
+            case 6:
+                sortuj_przedmioty(baza);
+                break;
             default:
                 printf("\nNieznana opcja.\n");
         }
