@@ -60,3 +60,71 @@ void dodaj_przedmiot(Przedmiot** baza) {
 
     printf("[SUKCES] Przedmiot '%s' zostal dodany do bazy.\n", nowy->nazwa);
 }
+
+void wyswietl_liste(Przedmiot* baza) {
+    if (baza == NULL) {
+        printf("\n[INFO] Archiwum jest puste. Brak zarejestrowanych przedmiotow.\n");
+        return;
+    }
+
+    printf("\n%-30s | %-15s | %-5s | %-15s\n", "Nazwa", "Swiat", "Chaos", "Stabilnosc");
+    printf("-------------------------------------------------------------------------------\n");
+
+    Przedmiot* aktualny = baza;
+    while (aktualny != NULL) {
+        // Zamiana numerka (enum) na tekst
+        char stan[20];
+        switch(aktualny->stabilnosc) {
+            case STABILNY: strcpy(stan, "Stabilny"); break;
+            case CHWIEJNY: strcpy(stan, "Chwiejny"); break;
+            case NIESTABILNY: strcpy(stan, "!NIESTABILNY!"); break;
+            default: strcpy(stan, "Nieznany"); break;
+        }
+
+        printf("%-30s | %-15s | %-5d | %-15s\n", 
+            aktualny->nazwa, aktualny->swiat_pochodzenia, aktualny->poziom_chaosu, stan);
+        
+        aktualny = aktualny->nastepny;
+    }
+    printf("-------------------------------------------------------------------------------\n");
+}
+void edytuj_przedmiot(Przedmiot* baza) {
+    if (baza == NULL) {
+        printf("\n[BLAD] Baza jest pusta. Nie ma czego edytowac.\n");
+        return;
+    }
+
+    char szukana_nazwa[MAX_NAZWA];
+    printf("\nPodaj nazwe przedmiotu do edycji: ");
+    wyczysc_bufor();
+    wczytaj_tekst(szukana_nazwa, MAX_NAZWA);
+
+    Przedmiot* aktualny = baza;
+    while (aktualny != NULL) {
+        if (strcmp(aktualny->nazwa, szukana_nazwa) == 0) {
+            printf("\n--- EDYCJA PRZEDMIOTU: %s ---\n", aktualny->nazwa);
+            printf("Aktualny poziom chaosu: %d\n", aktualny->poziom_chaosu);
+            printf("Aktualny opis: %s\n", aktualny->opis_efektu);
+            
+            //1. Zmiana chaosu
+            int nowy_chaos;
+            printf("\nPodaj nowy poziom chaosu (0-10): ");
+            while (scanf("%d", &nowy_chaos) != 1 || nowy_chaos < 0 || nowy_chaos > 10) {
+                printf("Blad! Podaj liczbe 0-10: ");
+                wyczysc_bufor();
+            }
+            aktualny->poziom_chaosu = nowy_chaos;
+            wyczysc_bufor();
+
+            // 2. Zmiana opisu
+            printf("Podaj nowy opis efektu: ");
+            wczytaj_tekst(aktualny->opis_efektu, MAX_OPIS);
+
+            printf("[SUKCES] Dane przedmiotu zostaly zaktualizowane.\n");
+            return;
+        }
+        aktualny = aktualny->nastepny;
+    }
+
+    printf("\n[INFO] Nie znaleziono przedmiotu o nazwie '%s'.\n", szukana_nazwa);
+}

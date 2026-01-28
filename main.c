@@ -55,7 +55,10 @@ int main(int argc, char *argv[]) {
                 dodaj_przedmiot(&baza);
                 break;
             case 2:
-                printf("\n[INFO] Funkcja wyswietlania w nastepnym kroku...\n");
+                wyswietl_liste(baza);
+                break;
+            case 3:
+                edytuj_przedmiot(baza);
                 break;
             case 0:
                 printf("\nZamykanie systemu...\n");
